@@ -1,22 +1,43 @@
 import json
 
 from Datos.Pelicula import Pelicula
+from Datos.Personaje import Personaje
+from Datos.Vehiculo import Vehiculo
 
 
 def cargar():
     opcion_carga = input("Cargar los datos borrara el registro local, ¿desea continuar? (S/N): ")
     if opcion_carga == "S":
-        data = json.load(open("peliculas.json"))
-        peli = Pelicula(data["codigo"], data["titulo"], data["fecha_salida"], data["director"], data["personajes"],
-                        data["vehiculos"])
-        peliculas.append(peli)
+        pelis_ex = json.load(open("peliculas.json"))
+        for peli in pelis_ex:
+            peli = Pelicula(pelis_ex["codigo"], pelis_ex["titulo"], pelis_ex["fecha_salida"], pelis_ex["director"],
+                            pelis_ex["personajes"],
+                            pelis_ex["vehiculos"])
+            peliculas.append(peli)
+
+        personajes_ex = json.load(open("personajes.json"))
+        for personaje in personajes_ex:
+            pers = Personaje(personaje["codigo"], personaje["nombre"], personaje["genero"], personaje["edad"],
+                             personaje["pelicula"], personaje["especie"])
+            personajes.append(pers)
 
 
-def guardar(peliculas):
+def guardar(peliculas, personajes, vehiculos):
+    pelis_g = []
+
     for pelicula in peliculas:
-        if type(pelicula) is Pelicula:
-            with open("peliculas.json", "w", encoding="utf-8") as f:
-                json.dump(pelicula.__dict__, f, ensure_ascii=False, indent=4)
+        pelis_g.append(pelicula.__dict__)
+    json.dump(pelis_g, open("peliculas.json", "w"))
+
+    personajes_g = []
+    for personaje in personajes:
+        personajes_g.append(personaje.__dict__)
+    json.dump(personajes_g, open("personajes.json", "w"))
+
+    vehiculos_g = []
+    for vehiculo in vehiculos:
+        vehiculos_g.append(vehiculo.__dict__)
+    json.dump(vehiculos_g, open("vehiculos.json", "w"))
 
 
 def mostrar(peliculas):
@@ -25,7 +46,7 @@ def mostrar(peliculas):
 
 
 def crear_personajes():
-    personajes = []
+    personajes = [Personaje] * 0
     print("Introduzca los personajes de la pelicula, dejar en blanco para terminar")
     personaje = input("Personaje: ")
     while personaje != "":
@@ -64,7 +85,12 @@ def eliminar(peliculas):
 
 
 if __name__ == '__main__':
-    peliculas = [Pelicula] * 0
+    peliculas = [Pelicula("1", "Star Wars", "1977", "George Lucas", ["Luke Skywalker", "Han Solo", "Leia Organa"],
+                          ["Millenium Falcon", "X-Wing", "TIE Fighter"]),
+                 Pelicula("2", "Star Wars", "1977", "George Lucas", ["Luke Skywalker", "Han Solo", "Leia Organa"],
+                          ["Millenium Falcon", "X-Wing", "TIE Fighter"])]
+    personajes = [Personaje] * 0
+    vehiculos = [Vehiculo] * 0
     opcion = -1
     while opcion != 7:
         opcion = int(input("1. Cargar Peliculas\n"
@@ -84,10 +110,10 @@ if __name__ == '__main__':
                 añadir(peliculas)
             case 4:
                 pass
-                eliminar(peliculas)
+                # eliminar(peliculas)
             case 5:
                 pass
-                modificar(peliculas)
+                # modificar(peliculas)
             case 6:
                 pass
                 mostrar(peliculas)
