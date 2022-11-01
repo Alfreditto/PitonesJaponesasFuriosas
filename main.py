@@ -66,7 +66,15 @@ def add_personaje(personajes):
 
 
 def add_vehiculo(vehiculos):
-    pass
+    codigo = input("Introduzca el codigo del vehiculo: ")
+    nombre = input("Introduzca el nombre del vehiculo: ")
+    tipo = input("Introduzca el tipo del vehiculo: ")
+    pelicula = input("Introduzca la pelicula del vehiculo: ")
+    vehiculo = Vehiculo(codigo, nombre, tipo, pelicula)
+    if vehiculo.codigo in vehiculos:
+        print("Ya existe un vehiculo con ese codigo")
+    else:
+        vehiculos.append(vehiculo)
 
 
 def añadir(peliculas, personajes, vehiculos):
@@ -81,8 +89,8 @@ def añadir(peliculas, personajes, vehiculos):
         print("Opcion no valida")
 
 
-def buscar_Objeto(lista, codigo):
-    for objeto in lista:
+def buscar_objeto(lista_objetos, codigo):
+    for objeto in lista_objetos:
         if objeto.codigo == codigo:
             return objeto
     print("No existe")
@@ -94,7 +102,7 @@ def crear_objetos(lista_objetos):
     print("Introduce el codigo, deja en blanco para terminar")
     codigo = input("Codigo: ")
     while codigo != "":
-        vehiculo = buscar_Objeto(vehiculos, codigo)
+        vehiculo = buscar_objeto(lista_objetos, codigo)
         if vehiculo is not None:
             objs.append(vehiculo)
         codigo = input("Codigo: ")
