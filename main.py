@@ -21,6 +21,11 @@ def cargar():
                              personaje["pelicula"], personaje["especie"])
             personajes.append(pers)
 
+        vehiculos_ex = json.load(open("vehiculos.json"))
+        for vehiculo in vehiculos_ex:
+            vehi = Vehiculo(vehiculo["codigo"], vehiculo["nombre"], vehiculo["tipo"], vehiculo["pelicula"])
+            vehiculos.append(vehi)
+
 
 def guardar(peliculas, personajes, vehiculos):
     pelis_g = []
