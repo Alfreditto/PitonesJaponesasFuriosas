@@ -1,5 +1,6 @@
 import json
 
+from Datos.Especie import Especie
 from Datos.Pelicula import Pelicula
 from Datos.Personaje import Personaje
 from Datos.Vehiculo import Vehiculo
@@ -50,33 +51,68 @@ def mostrar(peliculas):
         print(pelicula.__str__())
 
 
-def crear_personajes():
-    personajes = [Personaje] * 0
-    print("Introduzca los personajes de la pelicula, dejar en blanco para terminar")
-    personaje = input("Personaje: ")
-    while personaje != "":
-        personajes.append(personaje)
-        personaje = input("Personaje: ")
-    return personajes
-
-
-def crear_vehiculos():
-    vehiculos = []
-    print("Introduzca los vehiculos de la pelicula, dejar en blanco para terminar")
-    vehiculo = input("Vehiculo: ")
-    while vehiculo != "":
-        vehiculos.append(vehiculo)
-        vehiculo = input("Vehiculo: ")
-    return vehiculos
-
-
-def añadir(peliculas):
-    pelicula = Pelicula(input("Codigo: "), input("Titulo: "), input("Fecha de salida: "), input("Director: "),
-                        crear_personajes(), crear_vehiculos())
-    if pelicula.codigo not in peliculas:
-        peliculas.append(pelicula)
+def add_personaje(personajes):
+    codigo = input("Introduzca el codigo del personaje: ")
+    nombre = input("Introduzca el nombre del personaje: ")
+    genero = input("Introduzca el genero del personaje: ")
+    edad = input("Introduzca la edad del personaje: ")
+    pelicula = input("Introduzca la pelicula del personaje: ")
+    especie = input("Introduzca la especie del personaje: ").lower()
+    personaje = Personaje(codigo, nombre, genero, edad, pelicula, Especie(especie))
+    if personaje.codigo in personajes:
+        print("Ya existe un personaje con ese codigo")
     else:
-        print("La pelicula ya existe")
+        personajes.append(personaje)
+
+
+def add_vehiculo(vehiculos):
+    pass
+
+
+def añadir(peliculas, personajes, vehiculos):
+    opcion = input("Que desea añadir? (Pelicula/Personaje/Vehiculo): ").lower()
+    if opcion == "pelicula":
+        add_pelicula(peliculas, personajes, vehiculos)
+    elif opcion == "personaje":
+        add_personaje(personajes)
+    elif opcion == "vehiculo":
+        add_vehiculo(vehiculos)
+    else:
+        print("Opcion no valida")
+
+
+def buscar_Objeto(lista, codigo):
+    for objeto in lista:
+        if objeto.codigo == codigo:
+            return objeto
+    print("No existe")
+    return None
+
+
+def crear_objetos(lista_objetos):
+    objs = []
+    print("Introduce el codigo, deja en blanco para terminar")
+    codigo = input("Codigo: ")
+    while codigo != "":
+        vehiculo = buscar_Objeto(vehiculos, codigo)
+        if vehiculo is not None:
+            objs.append(vehiculo)
+        codigo = input("Codigo: ")
+    return objs
+
+
+def add_pelicula(peliculas, personajes, vehiculos):
+    codigo = input("Introduzca el codigo de la pelicula: ")
+    titulo = input("Introduzca el titulo de la pelicula: ")
+    fecha_salida = input("Introduzca la fecha de salida de la pelicula: ")
+    director = input("Introduzca el director de la pelicula: ")
+    personajes = crear_objetos(personajes)
+    vehiculos = crear_objetos(vehiculos)
+    pelicula = Pelicula(codigo, titulo, fecha_salida, director, personajes, vehiculos)
+    if pelicula.codigo in peliculas:
+        print("Ya existe una pelicula con ese codigo")
+    else:
+        peliculas.append(pelicula)
 
 
 def eliminar(peliculas):
@@ -112,7 +148,7 @@ if __name__ == '__main__':
                 guardar(peliculas)
             case 3:
                 pass
-                añadir(peliculas)
+                añadir(peliculas, personajes, vehiculos)
             case 4:
                 pass
                 # eliminar(peliculas)
