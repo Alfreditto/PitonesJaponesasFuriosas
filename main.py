@@ -111,9 +111,9 @@ def crear_objetos(lista_objetos):
     print("Introduce el codigo, deja en blanco para terminar")
     codigo = input("Codigo: ")
     while codigo != "":
-        vehiculo = buscar_objeto(lista_objetos, codigo)
-        if vehiculo is not None:
-            objs.append(vehiculo)
+        objeto = buscar_objeto(lista_objetos, codigo)
+        if objeto is not None:
+            objs.append(objeto)
         codigo = input("Codigo: ")
     return objs
 
@@ -123,7 +123,9 @@ def add_pelicula(peliculas, personajes, vehiculos):
     titulo = input("Introduzca el titulo de la pelicula: ")
     fecha_salida = input("Introduzca la fecha de salida de la pelicula: ")
     director = input("Introduzca el director de la pelicula: ")
+    print("Vamos a crear a los personajes")
     personajes = crear_objetos(personajes)
+    print("Vamos a crear a los vehiculos")
     vehiculos = crear_objetos(vehiculos)
     pelicula = Pelicula(codigo, titulo, fecha_salida, director, personajes, vehiculos)
     if pelicula.codigo in peliculas:
@@ -222,26 +224,23 @@ def modificar(peliculas, personajes, vehiculos):
 
 
 if __name__ == '__main__':
-    peliculas = [Pelicula("1", "Star Wars", "1977", "George Lucas", ["Luke Skywalker", "Han Solo", "Leia Organa"],
-                          ["Millenium Falcon", "X-Wing", "TIE Fighter"]),
-                 Pelicula("2", "Star Wars", "1977", "George Lucas", ["Luke Skywalker", "Han Solo", "Leia Organa"],
-                          ["Millenium Falcon", "X-Wing", "TIE Fighter"])]
+    peliculas = [None] * 0
     personajes = [Personaje] * 0
     vehiculos = [Vehiculo] * 0
     opcion = -1
     while opcion != 7:
-        opcion = int(input("1. Cargar Peliculas\n"
-                           "2. Guardar Peliculas\n"
-                           "3. Añadir Peliculas\n"
-                           "4. Eliminar Peliculas\n"
-                           "5. Modificar Peliculas\n"
-                           "6. Mostrar Peliculas\n"
+        opcion = int(input("1. Cargar\n"
+                           "2. Guardar\n"
+                           "3. Añadir\n"
+                           "4. Eliminar\n"
+                           "5. Modificar\n"
+                           "6. Mostrar\n"
                            "7. Salir\n"))
         match opcion:
             case 1:
                 cargar()
             case 2:
-                guardar(peliculas)
+                guardar(peliculas, personajes, vehiculos)
             case 3:
                 pass
                 añadir(peliculas, personajes, vehiculos)
