@@ -6,26 +6,22 @@ from Datos.Personaje import Personaje
 from Datos.Vehiculo import Vehiculo
 
 
-def cargar():
-    opcion_carga = input("Cargar los datos borrara el registro local, ¿desea continuar? (S/N): ")
+def borrar_bbdd(peliculas, personajes, vehiculos):
+    peliculas.clear()
+    personajes.clear()
+    vehiculos.clear()
+
+
+def cargar(peliculas, personajes, vehiculos):
+    # Esto de borrar la BBDD no me termina de convencer, a ver como lo decides dejar (～￣▽￣)～
+    opcion_carga = input("Cargar los datos borrara el registro local, ¿desea continuar? (S/N): ").upper()
     if opcion_carga == "S":
-        pelis_ex = json.load(open("peliculas.json"))
-        for peli in pelis_ex:
-            peli = Pelicula(pelis_ex["codigo"], pelis_ex["titulo"], pelis_ex["fecha_salida"], pelis_ex["director"],
-                            pelis_ex["personajes"],
-                            pelis_ex["vehiculos"])
-            peliculas.append(peli)
-
-        personajes_ex = json.load(open("personajes.json"))
-        for personaje in personajes_ex:
-            pers = Personaje(personaje["codigo"], personaje["nombre"], personaje["genero"], personaje["edad"],
-                             personaje["pelicula"], personaje["especie"])
-            personajes.append(pers)
-
-        vehiculos_ex = json.load(open("vehiculos.json"))
-        for vehiculo in vehiculos_ex:
-            vehi = Vehiculo(vehiculo["codigo"], vehiculo["nombre"], vehiculo["tipo"], vehiculo["pelicula"])
-            vehiculos.append(vehi)
+        borrar_bbdd(peliculas, personajes, vehiculos)
+        peliculas.append(json.loads(open("peliculas.json", "r").read()))
+        personajes.append(json.loads(open("personajes.json", "r").read()))
+        vehiculos.append(json.loads(open("vehiculos.json", "r").read()))
+    else:
+        print("Carga cancelada")
 
 
 def guardar(peliculas, personajes, vehiculos):
@@ -224,7 +220,7 @@ def modificar(peliculas, personajes, vehiculos):
 
 
 if __name__ == '__main__':
-    peliculas = [None] * 0
+    peliculas = [Pelicula] * 0
     personajes = [Personaje] * 0
     vehiculos = [Vehiculo] * 0
     opcion = -1
@@ -238,7 +234,7 @@ if __name__ == '__main__':
                            "7. Salir\n"))
         match opcion:
             case 1:
-                cargar()
+                cargar(peliculas, personajes, vehiculos)
             case 2:
                 guardar(peliculas, personajes, vehiculos)
             case 3:
