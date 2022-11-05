@@ -3,7 +3,7 @@ from Datos.Especie import Especie
 
 class Personaje:
     def __init__(self, codigo, nombre,
-                 genero, edad, pelicula, especie: Especie) -> None:
+                 genero, edad, especie: Especie) -> None:
         self.codigo = codigo
         self.nombre = nombre
         self.genero = genero
