@@ -1,5 +1,7 @@
 import json
 
+import jsonpickle as jsonpickle
+
 from Datos.Especie import Especie
 from Datos.Pelicula import Pelicula
 from Datos.Personaje import Personaje
@@ -16,26 +18,23 @@ def cargar(peliculas):
     if opcion_carga == "S":
         borrar_bbdd(peliculas)
         try:
-            peliculas.append(json.loads(open("peliculas.json", "r").read()))
+            with open('peliculas.json', 'r') as f:
+                peli_estr = jsonpickle.decode(f.read())
+            for peli in peli_estr:
+                assert isinstance(peli, Pelicula)
+                peliculas.append(peli)
         except json.decoder.JSONDecodeError:
             print("JSON invalido")
             # Hacemos otra limpieza por si se añadió algo corrupto
             borrar_bbdd(peliculas)
+
     else:
         print("Carga cancelada")
 
 
-def guardar(peliculas):
-    pelis_g = []
-
-    for pelicula in peliculas:
-        pelis_g.append(pelicula.__dict__)
-    json.dump(pelis_g, open("peliculas.json", "w"))
-
-
-def mostrar(peliculas):
-    for pelicula in peliculas:
-        print(pelicula.__str__())
+def guardar(list_peliculas):
+    with open('peliculas.json', 'w') as f:
+        f.write(jsonpickle.encode(list_peliculas))
 
 
 def buscar_objeto(lista, codigo):
@@ -75,7 +74,7 @@ def crear_personajes():
                 except ValueError:
                     print("Especie invalida")
                     especie = None
-            if nombre and genero and edad is not "":
+            if nombre and genero and edad != "":
                 personaje = Personaje(codigo, nombre, genero, edad, especie)
                 personajes.append(personaje)
             else:
@@ -103,7 +102,7 @@ def crear_vehiculos(personajes_peli):
                     piloto = personaje
                 else:
                     print("No existe un personaje con ese codigo")
-            if nombre is not "":
+            if nombre != "":
                 vehiculo = Vehiculo(codigo, nombre, piloto)
                 vehiculos.append(vehiculo)
             else:
@@ -128,6 +127,44 @@ def add_pelicula(list_peliculas):
         vehiculos = crear_vehiculos(personajes)
         pelicula = Pelicula(codigo, titulo, fecha_salida, director, personajes, vehiculos)
         list_peliculas.append(pelicula)
+
+
+def add_personaje(list_peliculas):
+    codigo_pelicula = input("Introduzca el codigo de la pelicula: ")
+    pelicula = buscar_objeto(list_peliculas, codigo_pelicula)
+    if pelicula is not None:
+        personajes = crear_personajes()
+        for personaje in personajes:
+            assert isinstance(pelicula, Pelicula)
+            pelicula.personajes.append(personaje)
+    else:
+        print("No existe una pelicula con ese codigo")
+
+
+def add_vehiculo(list_peliculas):
+    codigo_pelicula = input("Introduzca el codigo de la pelicula: ")
+    pelicula = buscar_objeto(list_peliculas, codigo_pelicula)
+    if pelicula is not None:
+        vehiculos = crear_vehiculos(pelicula.personajes)
+        for vehiculo in vehiculos:
+            assert isinstance(pelicula, Pelicula)
+            pelicula.vehiculos.append(vehiculo)
+    else:
+        print("No existe una pelicula con ese codigo")
+
+
+def annadir(peliculas):
+    print("¿Que desea añadir? (Pelicula, Personaje, Vehiculo)")
+    opcion = input("Opcion: ").lower()
+    match opcion:
+        case "pelicula":
+            add_pelicula(peliculas)
+        case "personaje":
+            add_personaje(peliculas)
+        case "vehiculo":
+            add_vehiculo(peliculas)
+        case _:
+            print("Opcion invalida")
 
 
 def eliminar_pelicula(list_peliculas):
@@ -198,46 +235,99 @@ def eliminar(list_peliculas):
         print("Opcion no valida")
 
 
-def modificar_pelicula(peliculas):
+def modificar_pelicula(list_peliculas):
     codigo = input("Introduzca el codigo de la pelicula a modificar: ")
-    pelicula = buscar_objeto(peliculas, codigo)
-    if pelicula is not None:
-        pelicula.titulo = input("Introduzca el nuevo titulo de la pelicula: ")
-        pelicula.fecha_salida = input("Introduzca la nueva fecha de salida de la pelicula: ")
-        pelicula.director = input("Introduzca el nuevo director de la pelicula: ")
+    pelicula = buscar_objeto(list_peliculas, codigo)
+    if pelicula is None:
+        print("No existe una pelicula con ese codigo")
+    else:
+        opcion = int(input("¿Que desea modificar?"
+                           "1. Titulo"
+                           "2. Fecha de salida"
+                           "3. Director"))
+        assert isinstance(pelicula, Pelicula)
+        match opcion:
+            case 1:
+                pelicula.titulo = input("Introduzca el nuevo titulo: ")
+            case 2:
+                pelicula.fecha_salida = input("Introduzca la nueva fecha de salida: ")
+            case 3:
+                pelicula.director = input("Introduzca el nuevo director: ")
+            case _:
+                print("Opcion no valida")
 
 
-def modificar_personaje(personajes):
-    codigo = input("Introduzca el codigo del personaje a modificar: ")
-    personaje = buscar_objeto(personajes, codigo)
-    if personaje is not None:
-        personaje.nombre = input("Introduzca el nuevo nombre del personaje: ")
-        personaje.fecha_nacimiento = input("Introduzca la nueva fecha de nacimiento del personaje: ")
-        print("Vamos a añadir list_peliculas al personaje")
-        personaje.peliculas = crear_objetos(personajes)
-        print("Vamos a añadir vehiculos al personaje")
-        personaje.vehiculos = crear_objetos(vehiculos)
+def modificar_personaje(list_peliculas):
+    codigo_peli = input("Introduzca el codigo de la pelicula: ")
+    pelicula = buscar_objeto(list_peliculas, codigo_peli)
+    if pelicula is None:
+        print("No existe una pelicula con ese codigo")
+    else:
+        codigo = input("Introduzca el codigo del personaje a modificar: ")
+        assert isinstance(pelicula, Pelicula)
+        personaje = buscar_objeto(pelicula.personajes, codigo)
+        if personaje is None:
+            print("No existe un personaje con ese codigo")
+        else:
+            opcion = int(input("¿Que desea modificar?"
+                               "1. Nombre"
+                               "2. Genero"
+                               "3. Especie"
+                               ))
+            assert isinstance(personaje, Personaje)
+            match opcion:
+                case 1:
+                    personaje.nombre = input("Introduzca el nuevo nombre: ")
+                case 2:
+                    personaje.genero = input("Introduzca el nuevo genero: ")
+                case 3:
+                    try:
+                        personaje.especie = Especie(input("Introduzca la nueva especie: "))
+                    except ValueError:
+                        print("Especie no valida")
+                case _:
+                    print("Opcion no valida")
 
 
-def modificar_vehiculo(vehiculos):
-    codigo = input("Introduzca el codigo del vehiculo a modificar: ")
-    vehiculo = buscar_objeto(vehiculos, codigo)
-    if vehiculo is not None:
-        vehiculo.nombre = input("Introduzca el nuevo nombre del vehiculo: ")
-        vehiculo.fecha_creacion = input("Introduzca la nueva fecha de creacion del vehiculo: ")
-        vehiculo.piloto = buscar_objeto(personajes, input("Introduzca el codigo del nuevo piloto: "))
-        print("Vamos a añadir list_peliculas al vehiculo")
-        vehiculo.peliculas = crear_objetos(peliculas)
+def modificar_vehiculo(list_peliculas):
+    codigo_peli = input("Introduzca el codigo de la pelicula: ")
+    pelicula = buscar_objeto(list_peliculas, codigo_peli)
+    if pelicula is None:
+        print("No existe una pelicula con ese codigo")
+    else:
+        codigo = input("Introduzca el codigo del vehiculo a modificar: ")
+        assert isinstance(pelicula, Pelicula)
+        vehiculo = buscar_objeto(pelicula.vehiculos, codigo)
+        if vehiculo is None:
+            print("No existe un vehiculo con ese codigo")
+        else:
+            opcion = int(input("¿Que desea modificar?"
+                               "1. Nombre"
+                               "3. Piloto"
+                               ))
+            assert isinstance(vehiculo, Vehiculo)
+            match opcion:
+                case 1:
+                    vehiculo.nombre = input("Introduzca el nuevo nombre: ")
+                case 2:
+                    codigo_pilot = input("Introduzca el codigo del nuevo piloto: ")
+                    personaje = buscar_objeto(pelicula.personajes, codigo_pilot)
+                    if personaje is None:
+                        print("No existe un personaje con ese codigo")
+                    else:
+                        vehiculo.piloto = personaje
+                case _:
+                    print("Opcion no valida")
 
 
-def modificar(peliculas, personajes, vehiculos):
+def modificar(peliculas):
     opcion = input("Que desea modificar? (Pelicula/Personaje/Vehiculo): ").lower()
     if opcion == "pelicula":
         modificar_pelicula(peliculas)
     elif opcion == "personaje":
-        modificar_personaje(personajes)
+        modificar_personaje(peliculas)
     elif opcion == "vehiculo":
-        modificar_vehiculo(vehiculos)
+        modificar_vehiculo(peliculas)
     else:
         print("Opcion no valida")
 
@@ -259,17 +349,14 @@ if __name__ == '__main__':
             case 2:
                 guardar(peliculas)
             case 3:
-                pass
-                add_pelicula(peliculas)
+                annadir(peliculas)
             case 4:
-                pass
                 eliminar(peliculas)
             case 5:
-                pass
-                modificar(peliculas, personajes, vehiculos)
+                modificar(peliculas)
             case 6:
-                pass
-                mostrar(peliculas)
+                for pelicula in peliculas:
+                    print(pelicula.__str__())
             case 7:
                 print("Saliendo...")
             case _:
