@@ -6,20 +6,21 @@ from Datos.Personaje import Personaje
 from Datos.Vehiculo import Vehiculo
 
 
-def borrar_bbdd(peliculas, personajes, vehiculos):
+def borrar_bbdd(peliculas):
     peliculas.clear()
-    personajes.clear()
-    vehiculos.clear()
 
 
-def cargar(peliculas, personajes, vehiculos):
+def cargar(peliculas):
     # Esto de borrar la BBDD no me termina de convencer, a ver como lo decides dejar (～￣▽￣)～
     opcion_carga = input("Cargar los datos borrara el registro local, ¿desea continuar? (S/N): ").upper()
     if opcion_carga == "S":
-        borrar_bbdd(peliculas, personajes, vehiculos)
-        peliculas.append(json.loads(open("peliculas.json", "r").read()))
-        personajes.append(json.loads(open("personajes.json", "r").read()))
-        vehiculos.append(json.loads(open("vehiculos.json", "r").read()))
+        borrar_bbdd(peliculas)
+        try:
+            peliculas.append(json.loads(open("peliculas.json", "r").read()))
+        except json.decoder.JSONDecodeError:
+            print("JSON invalido")
+            # Hacemos otra limpieza por si se añadió algo corrupto
+            borrar_bbdd(peliculas)
     else:
         print("Carga cancelada")
 
@@ -234,7 +235,7 @@ if __name__ == '__main__':
                            "7. Salir\n"))
         match opcion:
             case 1:
-                cargar(peliculas, personajes, vehiculos)
+                cargar(peliculas)
             case 2:
                 guardar(peliculas, personajes, vehiculos)
             case 3:
