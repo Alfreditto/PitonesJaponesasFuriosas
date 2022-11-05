@@ -1,10 +1,4 @@
-from enum import Enum
+class Especie:
 
-
-class Especie(Enum):
-    HUMANO = "humano"
-    ESPIRITU = "espíritu"
-    DIOS = "dios"
-    TOTORO = "totoro"
-    GATO = "gato"
-
+    def __init__(self, nombre) -> None:
+        self.nombre = nombre

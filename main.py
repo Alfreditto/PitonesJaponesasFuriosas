@@ -19,10 +19,11 @@ def cargar(peliculas):
         borrar_bbdd(peliculas)
         try:
             with open('peliculas.json', 'r') as f:
-                peli_estr = jsonpickle.decode(f.read())
-            for peli in peli_estr:
-                assert isinstance(peli, Pelicula)
-                peliculas.append(peli)
+                peli_estr = json.load(f)
+                print(type(peli_estr))
+                for peli in peli_estr:
+                    aux = Pelicula(peli['codigo'], peli['titulo'], peli['fecha_salida'], peli['director'], peli['personajes'], peli['vehiculos'])
+                    peliculas.append(aux)
         except json.decoder.JSONDecodeError:
             print("JSON invalido")
             # Hacemos otra limpieza por si se añadió algo corrupto
@@ -33,8 +34,14 @@ def cargar(peliculas):
 
 
 def guardar(list_peliculas):
+    peliculas_estr = []
+    for pelicula in list_peliculas:
+        peliculas_estr.append(pelicula.__dict__)
+
     with open('peliculas.json', 'w') as f:
-        f.write(jsonpickle.encode(list_peliculas))
+        json.dump(peliculas_estr, f)
+
+
 
 
 def buscar_objeto(lista, codigo):
@@ -67,14 +74,8 @@ def crear_personajes():
             nombre = input("Nombre: ")
             genero = input("Genero: ")
             edad = input("Edad: ")
-            especie = None
-            while especie is None:
-                try:
-                    especie = Especie(input("Especie: (Humano, Espiritu, Dios, Totoro, Gato)").lower())
-                except ValueError:
-                    print("Especie invalida")
-                    especie = None
-            if nombre and genero and edad != "":
+            especie = input("Especie: ")
+            if nombre and genero and edad and especie != "":
                 personaje = Personaje(codigo, nombre, genero, edad, especie)
                 personajes.append(personaje)
             else:
