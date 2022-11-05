@@ -7,3 +7,4 @@ class Especie(Enum):
     DIOS = "dios"
     TOTORO = "totoro"
     GATO = "gato"
+

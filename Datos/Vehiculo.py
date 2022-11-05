@@ -7,5 +7,4 @@ class Vehiculo:
                  pelicula: Pelicula, piloto: Personaje) -> None:
         self.codigo = codigo
         self.nombre = nombre
-        self.pelicula = pelicula
         self.piloto = piloto

@@ -8,7 +8,6 @@ class Personaje:
         self.nombre = nombre
         self.genero = genero
         self.edad = edad
-        self.pelicula = pelicula
         self.especie = especie
 
     def __str__(self) -> str:
