@@ -25,22 +25,12 @@ def cargar(peliculas):
         print("Carga cancelada")
 
 
-def guardar(peliculas, personajes, vehiculos):
+def guardar(peliculas):
     pelis_g = []
 
     for pelicula in peliculas:
         pelis_g.append(pelicula.__dict__)
     json.dump(pelis_g, open("peliculas.json", "w"))
-
-    personajes_g = []
-    for personaje in personajes:
-        personajes_g.append(personaje.__dict__)
-    json.dump(personajes_g, open("personajes.json", "w"))
-
-    vehiculos_g = []
-    for vehiculo in vehiculos:
-        vehiculos_g.append(vehiculo.__dict__)
-    json.dump(vehiculos_g, open("vehiculos.json", "w"))
 
 
 def mostrar(peliculas):
