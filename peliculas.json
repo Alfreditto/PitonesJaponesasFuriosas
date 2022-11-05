@@ -1,10 +1,1 @@
-[
-  {
-    "codigo": "123",
-    "titulo": "123",
-    "fecha_salida": "123",
-    "director": "123",
-    "personajes": [],
-    "vehiculos": []
-  }
-]
+[{"codigo": "123", "titulo": "123", "fecha_salida": "123", "director": "123", "personajes": [{"codigo": "123", "nombre": "123", "genero": "123", "edad": "123", "especie": "123"}], "vehiculos": []}]
