@@ -6,3 +6,6 @@ class Pelicula:
         self.director = director
         self.personajes = personajes
         self.vehiculos = vehiculos
+
+    def __str__(self) -> str:
+        return f"Pelicula: Codigo: {self.codigo}, Titulo: {self.titulo}, Fecha de salida: {self.fecha_salida}, Director: {self.director}"

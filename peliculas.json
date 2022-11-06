@@ -1,0 +1,30 @@
+[
+  {
+    "codigo": "123",
+    "titulo": "123",
+    "fecha_salida": "2022-11-06",
+    "director": "123",
+    "personajes": [
+      {
+        "codigo": "123",
+        "nombre": "123",
+        "genero": "123",
+        "edad": 123,
+        "especie": "123"
+      }
+    ],
+    "vehiculos": [
+      {
+        "codigo": "123",
+        "nombre": "123",
+        "piloto": {
+          "codigo": "123",
+          "nombre": "123",
+          "genero": "123",
+          "edad": 123,
+          "especie": "123"
+        }
+      }
+    ]
+  }
+]
